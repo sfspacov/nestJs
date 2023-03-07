@@ -7,19 +7,24 @@ import { NotFoundException } from "@nestjs/common/exceptions";
 @Injectable({})
 export class AuthService {
     constructor(private prisma: PrismaService) { }
-    
+
     async signin(dto: AuthDto) {
         const user = await this.prisma.user.findUnique({
-            where:{
+            where: {
                 email: dto.email
             }
         });
 
         if (!user)
-        {
             throw new NotFoundException('Credentials incorrect');
-        }
-        return { msg: "Im signin" }
+
+        const pwMatches = await argon.verify(user.hash, dto.password);
+        if (!pwMatches)
+            throw new NotFoundException('Credentials incorrect');
+
+        delete user.hash;
+
+        return user;
     }
 
     async signup(dto: AuthDto) {
@@ -40,7 +45,7 @@ export class AuthService {
                 })
             return user;
         } catch (error) {
-            if (error.code == 'P2002'){
+            if (error.code == 'P2002') {
                 throw new ConflictException("Email already registered")
             }
             throw error;

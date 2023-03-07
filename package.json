@@ -6,6 +6,11 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "db:reset":"npx prisma migrate reset",
+    "db:dev":"npx prisma migrate dev",
+    "db:studio":"npx prisma studio",
+    "db:killport":"npx kill-port 5555",
+    "app:killport":"npx kill-port 3333",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
