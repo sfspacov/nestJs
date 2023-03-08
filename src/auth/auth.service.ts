@@ -29,10 +29,10 @@ export class AuthService {
 
         delete user.hash;
 
-        return this.signToken(user.id, user.email);
+        return this.createToken(user.id, user.email);
     }
 
-    async signToken(userId: number, email: string): Promise<{ access_token: string }> {
+    async createToken(userId: number, email: string): Promise<{ access_token: string }> {
         const payload = {
             sub: userId,
             email
@@ -65,7 +65,7 @@ export class AuthService {
                         createdAt: true
                     }
                 })
-            return this.signToken(user.id, dto.email);
+            return this.createToken(user.id, dto.email);
         } catch (error) {
             if (error.code == 'P2002') {
                 throw new ConflictException("Email already registered")
